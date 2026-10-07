@@ -167,7 +167,7 @@ const Staking = ({
   };
 
   return (
-    <Container>
+    <Container grayBorder>
       <div className="flex flex-col items-center font-pixel gap-5">
         <div className="flex justify-between items-center font-console gap-2">
           <div>$aWOOL in your wallet:</div>

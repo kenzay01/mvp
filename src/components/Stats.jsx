@@ -11,7 +11,7 @@ const Stats = ({ stats, users }) => {
   }
 
   return (
-    <Container>
+    <Container grayBorder>
       <div className="flex flex-col items-center font-pixel gap-4 text-center">
         <div className="w-full flex justify-around items-center">
           <div

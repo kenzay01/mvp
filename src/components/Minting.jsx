@@ -205,7 +205,7 @@ const Minting = ({ wallet, chain, stats, reload, woolBalance }) => {
     };
 
     return (
-        <Container>
+        <Container grayBorder>
             <div className="flex flex-col items-center font-pixel gap-5">
                 <div className="subtitle mt-5">MINTING</div>
                 <MintProgress minted={totalMinted()} maxTokens={maxTokens()} />

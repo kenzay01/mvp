@@ -1,10 +1,10 @@
-const Container = ({children, transparent=true}) => {
+const Container = ({children, transparent=true, grayBorder=false}) => {
 
   return (
     <div 
       className="w-full h-full relative flex p-1 md:p-5 flex justify-center overflow-hidden" 
       style={{
-        borderImage: 'url(/images/wood-frame.svg) 30 30 30 30 stretch',
+        borderImage: `url(/images/${grayBorder ? 'gray' : 'wood'}-frame.svg) 30 30 30 30 stretch`,
         borderWidth: '30px',
         background: `rgba(237, 227, 209, ${transparent ? 0.8 : 1.0})`
       }}

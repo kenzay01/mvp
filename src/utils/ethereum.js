@@ -1,5 +1,6 @@
 import { providers, utils } from "ethers";
 import { useEffect, useState } from "react";
+import { AVALANCHE_MAINNET, chainId } from "./constants";
 
 export const _isMetaMaskInstalled = () => {
   if (typeof window === "undefined") return;
@@ -73,8 +74,9 @@ export const WalletHook = () => {
 export const connectMetamask = async () => {
   if (!_isMetaMaskInstalled()) return false;
   try {
-    await window.ethereum.request({ method: "eth_requestAccounts" });
-    return true;
+    const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+    if (!accounts.length) return false;
+    return await switchToMainnet();
   } catch (e) {
     console.log(e);
     return false;
@@ -83,16 +85,32 @@ export const connectMetamask = async () => {
 
 export const switchToMainnet = async () => {
   if (!_isMetaMaskInstalled()) return false;
+  const provider = window.ethereum;
   try {
-    await window.ethereum.request({
+    const currentChain = await provider.request({ method: "eth_chainId" });
+    if (parseInt(currentChain, 16) === chainId) return true;
+
+    const switchRequest = {
       method: "wallet_switchEthereumChain",
-      params: [
-        {
-          chainId: `0x${parseInt(process.env.REACT_APP_CHAIN).toString(16)}`,
-        },
-      ],
-    });
-    return true;
+      params: [{ chainId: AVALANCHE_MAINNET.chainId }],
+    };
+
+    try {
+      await provider.request(switchRequest);
+    } catch (error) {
+      const isUnknownChain = Number(error.code) === 4902 ||
+        Number(error.data?.originalError?.code) === 4902;
+      if (!isUnknownChain) throw error;
+
+      await provider.request({
+        method: "wallet_addEthereumChain",
+        params: [AVALANCHE_MAINNET],
+      });
+      await provider.request(switchRequest);
+    }
+
+    const activeChain = await provider.request({ method: "eth_chainId" });
+    return parseInt(activeChain, 16) === chainId;
   } catch (e) {
     console.log(e);
     return false;
